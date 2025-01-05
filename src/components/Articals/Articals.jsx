@@ -1,12 +1,16 @@
 import { useState,  } from 'react';
 import axios from 'axios';
 import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
+import { toast } from 'react-hot-toast';
+
 import '../../App.css';
+
+
 
 function Articals() {
 
     const [bookmarkedArticles, setBookmarkedArticles] = useState({});
-    const API_URL = 'https://buistron-backend-4.onrender.com'
+  
 
  
     const handleBookmark = async (id) => {
@@ -14,8 +18,8 @@ function Articals() {
     
         try {
             if (!bookmarkedArticles[id]) {
-       
-                await axios.post(`${API_URL}/api/bookmarks`, {
+               
+                await axios.post(`http://localhost:4000/api/bookmarks`, {
                     articleId: id,
                     title: article.title,
                     content: article.content,
@@ -24,15 +28,20 @@ function Articals() {
                 });
                 console.log(`Article ${id} bookmarked!`);
     
-         
+                toast.success(`Article ${id} bookmarked!`);
+    
+        
                 setBookmarkedArticles((prevState) => ({
                     ...prevState,
                     [id]: true, 
                 }));
             } else {
-             
-                await axios.delete(`${API_URL}/api/bookmarks/${id}`);
+            
+                await axios.delete(`http://localhost:4000/api/bookmarks/${id}`);
                 console.log(`Article ${id} removed from bookmarks!`);
+    
+               
+                toast.success(`Article ${id} removed from bookmarks!`);
     
              
                 setBookmarkedArticles((prevState) => ({
@@ -41,6 +50,8 @@ function Articals() {
                 }));
             }
         } catch (error) {
+          
+            toast.error("Error bookmarking article!");
             console.error("Error bookmarking article:", error);
         }
     };
@@ -114,6 +125,7 @@ function Articals() {
                     </div>
                 ))}
             </div>
+          
         </div>
     );
 }
